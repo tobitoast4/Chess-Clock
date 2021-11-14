@@ -27,14 +27,23 @@ public class DialogSelectClicksound extends AppCompatDialogFragment{
     private int current_sound_id;
     private MediaPlayer mp;
 
-    public DialogSelectClicksound(int current_sound_id){
+    private boolean darkmode;
+
+    public DialogSelectClicksound(int current_sound_id, boolean darkmode){
         this.current_sound_id = current_sound_id;
+        this.darkmode = darkmode;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        AlertDialog.Builder builder;
+        if(darkmode){
+            builder= new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        } else {
+
+            builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        }
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_select_clicksound, null);

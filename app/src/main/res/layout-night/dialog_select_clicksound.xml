@@ -38,28 +38,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Blob"
-            android:textColor="@color/grey" />
+            android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/radioButton2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Metronom"
-            android:textColor="@color/grey" />
+            android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/radioButton3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Normal clack"
-            android:textColor="@color/grey" />
+            android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/radioButton4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tongue clack"
-            android:textColor="@color/grey" />
+            android:textColor="@color/white" />
     </RadioGroup>
 
     <TextView
@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Select a click sound"
-        android:textColor="@color/grey"
+        android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

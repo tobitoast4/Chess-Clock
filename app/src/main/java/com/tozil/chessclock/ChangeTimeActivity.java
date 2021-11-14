@@ -1,6 +1,7 @@
 package com.tozil.chessclock;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -18,6 +19,8 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
 
     private SharedPreferences sharedPrefs;
     private int[][] times;
+
+    private boolean darkmode;
 
     /* times reperesents the following array:
 
@@ -39,6 +42,8 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
         setContentView(R.layout.activity_change_time);
 
         sharedPrefs = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
+
+        darkmode = (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
 
         initializeTimes();
     }
@@ -77,32 +82,32 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
     }
 
     public void changeTotalTimeTimer1(View v){
-        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[0][0], times[0][1], times[0][2], 0);
+        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[0][0], times[0][1], times[0][2], 0, darkmode);
         dialogTimePicker.show(getSupportFragmentManager(), "dialogTimePicker");
     }
 
     public void changeTotalDelayTimer1(View v){
-        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[1][0], times[1][1], times[1][2], 1);
+        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[1][0], times[1][1], times[1][2], 1, darkmode);
         dialogTimePicker.show(getSupportFragmentManager(), "dialogTimePicker");
     }
 
     public void changeTotalIncrementTimer1(View v){
-        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[2][0], times[2][1], times[2][2], 2);
+        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[2][0], times[2][1], times[2][2], 2, darkmode);
         dialogTimePicker.show(getSupportFragmentManager(), "dialogTimePicker");
     }
 
     public void changeTotalTimeTimer2(View v){
-        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[3][0], times[3][1], times[3][2], 3);
+        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[3][0], times[3][1], times[3][2], 3, darkmode);
         dialogTimePicker.show(getSupportFragmentManager(), "dialogTimePicker");
     }
 
     public void changeTotalDelayTimer2(View v){
-        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[4][0], times[4][1], times[4][2], 4);
+        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[4][0], times[4][1], times[4][2], 4, darkmode);
         dialogTimePicker.show(getSupportFragmentManager(), "dialogTimePicker");
     }
 
     public void changeTotalIncrementTimer2(View v){
-        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[5][0], times[5][1], times[5][2], 5);
+        DialogTimePicker dialogTimePicker = new DialogTimePicker(times[5][0], times[5][1], times[5][2], 5, darkmode);
         dialogTimePicker.show(getSupportFragmentManager(), "dialogTimePicker");
     }
 

@@ -19,20 +19,29 @@ public class DialogTimePicker extends AppCompatDialogFragment{
     private MyNumberPicker numberPickerMinutes;
     private MyNumberPicker numberPickerSeconds;
 
+    private boolean darkmode;
+
 
     private int hours, minutes, seconds, row;
 
-    public DialogTimePicker(int hours, int minutes, int seconds, int row){
+    public DialogTimePicker(int hours, int minutes, int seconds, int row, boolean darkmode){
         this.hours = hours;
         this.minutes = minutes;
         this.seconds = seconds;
         this.row = row;
+        this.darkmode = darkmode;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        AlertDialog.Builder builder;
+        if(darkmode){
+            builder= new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        } else {
+
+            builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        }
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_timer_picker, null);
