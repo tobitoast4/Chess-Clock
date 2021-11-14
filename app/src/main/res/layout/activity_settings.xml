@@ -20,9 +20,9 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:text="Settings"
             android:textColor="@color/white"
             android:textSize="22sp"
@@ -50,7 +50,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/setting_background">
+                android:background="@drawable/setting_background"
+                android:onClick="changeTime">
 
                 <TextView
                     android:id="@+id/settings_textView1"

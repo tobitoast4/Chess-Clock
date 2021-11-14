@@ -1,6 +1,7 @@
 package com.tozil.chessclock;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 
 /**
  * This class uses the native CountDownTimer to 
@@ -26,13 +27,12 @@ public abstract class CountDownTimerPausable {
     }
 
     private void createCountDownTimer(){
-        countDownTimer = new CountDownTimer(millisRemaining,countDownInterval) {
+        countDownTimer = new CountDownTimer(millisRemaining, countDownInterval) {
 
             @Override
             public void onTick(long millisUntilFinished) {
                 millisRemaining = millisUntilFinished;
                 CountDownTimerPausable.this.onTick(millisUntilFinished);
-
             }
 
             @Override
@@ -73,11 +73,20 @@ public abstract class CountDownTimerPausable {
         }
         return this;
     }
+
+//    public synchronized final CountDownTimerPausable start(int i){
+//        if(isPaused){
+//            createCountDownTimer();
+//            countDownTimer.start();
+//            isPaused = false;
+//        }
+//        return this;
+//    }
     /**
      * Pauses the CountDownTimerPausable, so it could be resumed(start)
      * later from the same point where it was paused.
      */
-    public void pause()throws IllegalStateException{
+    public void pause() throws IllegalStateException{
         if(isPaused==false){
             countDownTimer.cancel();
         } else{
@@ -88,5 +97,9 @@ public abstract class CountDownTimerPausable {
 
     public boolean isPaused() {
         return isPaused;
+    }
+
+    public void addTime(long milliSecs){
+        this.millisRemaining = this.millisRemaining + milliSecs;
     }
 }

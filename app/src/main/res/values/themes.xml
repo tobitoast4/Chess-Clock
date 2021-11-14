@@ -12,9 +12,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Makes the taskbar and buttonbar half transparent -->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
-<!--        <item name="android:windowTranslucentStatus">true</item>-->
-<!--        <item name="android:fitsSystemWindows">true</item>-->
 
     </style>
 
@@ -35,5 +32,9 @@
 <!--        <item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:fitsSystemWindows">true</item>
 
+    </style>
+
+    <style name="AppTheme.Picker" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:textColorPrimary">#FFFFFF</item>
     </style>
 </resources>

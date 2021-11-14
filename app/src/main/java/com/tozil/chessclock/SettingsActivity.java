@@ -3,6 +3,7 @@ package com.tozil.chessclock;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -23,7 +24,8 @@ public class SettingsActivity extends AppCompatActivity implements DialogSelectC
     }
 
     public void changeTime(View v){
-
+        Intent intent = new Intent(getApplicationContext(), ChangeTimeActivity.class);
+        startActivity(intent);
     }
 
     public void changeSound(View v){

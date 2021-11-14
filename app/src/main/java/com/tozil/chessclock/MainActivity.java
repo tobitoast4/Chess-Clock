@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textView_top;
     private TextView textView_bottom;
+    private TextView textView_gamePaused_top;
+    private TextView textView_gamePaused_bottom;
 
     ConstraintLayout button_top;
     ConstraintLayout button_bottom;
@@ -26,9 +30,12 @@ public class MainActivity extends AppCompatActivity {
     CountDownTimerPausable timer_top;
     CountDownTimerPausable timer_bottom;
 
+    Handler handler_top;
+    Handler handler_bottom;
+
     private int state = 0; // indicated the state of the game
                            // 0: game hasnt started
-                           // 1: timer on top is running, timer on botoom is paused
+                           // 1: timer on top is running, timer on bottom is paused
                            // 2: timer on bottom is running, timer on bottom is paused
                            // 3: game is over, one timer is expired
 
@@ -55,7 +62,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        handler_top = new Handler();
+        handler_bottom = new Handler();
+
+        textView_top = findViewById(R.id.textView_top);
+        textView_bottom = findViewById(R.id.textView_bottom);
+        textView_gamePaused_top = findViewById(R.id.textView_gamePaused_top);
+        textView_gamePaused_bottom = findViewById(R.id.textView_gamePaused_bottom);
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         sharedPrefs = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
 
@@ -68,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void startGame(){
         // (re)sets the textViews and the timers
-        textView_top = findViewById(R.id.textView_top);
-        textView_bottom = findViewById(R.id.textView_bottom);
         textView_top.setText(getTime(sharedPrefs.getLong("timer_top_milliSeconds", 0)));
         textView_bottom.setText(getTime(sharedPrefs.getLong("timer_bottom_milliSeconds", 0)));
 
@@ -78,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         timer_top = initializeTimer(sharedPrefs.getLong("timer_top_milliSeconds", 0), textView_top);
         timer_bottom = initializeTimer(sharedPrefs.getLong("timer_bottom_milliSeconds", 0), textView_bottom);
-//        timer_top = initializeTimer(5000, textView_top);
-//        timer_bottom = initializeTimer(5000, textView_bottom);
     }
 
     public void onFirstStart(){
@@ -101,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         CountDownTimerPausable timer =  new CountDownTimerPausable(timeInMilliSecs, 100) {
 
             public void onTick(long millisUntilFinished) {
+                Log.i("TEst!!", "");
                 textView.setText(getTime(millisUntilFinished));
                 if(millisUntilFinished < 3050 && millisUntilFinished > 2950){
                     playFinishingSound(false);
@@ -139,7 +151,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                         // TODO Auto-generated method stub
-                        spool.play(soundID, 1.0f, 1.0f, 1, 0, 1f);
+                        if(state > 0){
+                            spool.play(soundID, 1.0f, 1.0f, 1, 0, 1f);
+                        }
                     }
                 });
 
@@ -185,34 +199,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void toggleTimerTop(View v) {
-        // pauses timer on top, resumes timer on bottom
-        toggleTimer(timer_top, timer_bottom);
-        button_top.setBackground(getDrawable(R.drawable.button_main_inactive));
-        button_bottom.setBackground(getDrawable(R.drawable.button_main_active));
-        state = 2;
-    }
-
-    public void toggleTimerBottom(View v) {
-        // pauses timer on bottom, resumes timer on top
-        toggleTimer(timer_bottom, timer_top);
-        button_top.setBackground(getDrawable(R.drawable.button_main_active));
-        button_bottom.setBackground(getDrawable(R.drawable.button_main_inactive));
-        state = 1;
-    }
-
-    public void toggleTimer(CountDownTimerPausable timerToPause, CountDownTimerPausable timerToStart){
-        // pauses timer timerToPause
-        // resumes timer timerToStart
-        if(!timerToPause.isPaused() || state == 0){
-            spool.play(soundID, volume, volume, 1, 0, 1f); // click sound
-        }
-        timerToStart.start();
+    public void toggleTimerTop(View v) { // pauses timer on top, resumes timer on bottom
+        toggleTimer(button_top, button_bottom);
+        handler_top.postDelayed(new Runnable() {
+            public void run() {
+                timer_bottom.start();
+            }
+        }, sharedPrefs.getLong("timer_bottom_milliSecondsDelay", 0));
         try {
-            timerToPause.pause();
+            timer_top.pause();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
+    }
+
+    public void toggleTimerBottom(View v) { // pauses timer on bottom, resumes timer on top
+        toggleTimer(button_bottom, button_top);
+        handler_bottom.postDelayed(new Runnable() {
+            public void run() {
+                timer_top.start();
+            }
+        }, sharedPrefs.getLong("timer_top_milliSecondsDelay", 0));
+        try {
+            timer_bottom.pause();
+        } catch (Exception e) {
+//            e.printStackTrace();
+        }
+    }
+
+    public void toggleTimer(ConstraintLayout buttonToPause, ConstraintLayout buttonToStart){
+        //stopping running handlers
+        handler_top.removeCallbacksAndMessages(null);
+        handler_bottom.removeCallbacksAndMessages(null);
+
+        spool.play(soundID, volume, volume, 1, 0, 1f); // click sound
+
+        textView_gamePaused_top.setVisibility(View.INVISIBLE);
+        textView_gamePaused_bottom.setVisibility(View.INVISIBLE);
+
+        buttonToPause.setBackground(getDrawable(R.drawable.button_main_inactive));
+        buttonToStart.setBackground(getDrawable(R.drawable.button_main_active));
+
+        buttonToPause.setClickable(false);
+        buttonToStart.setClickable(true);
+
+        state = 1;
     }
 
     public void settings(View v){
@@ -222,10 +253,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pauseGame(View v){
+        textView_gamePaused_top.setVisibility(View.VISIBLE);
+        textView_gamePaused_bottom.setVisibility(View.VISIBLE);
+
+        button_top.setClickable(true);
+        button_bottom.setClickable(true);
+        //stopping running handlers
+        handler_top.removeCallbacksAndMessages(null);
+        handler_bottom.removeCallbacksAndMessages(null);
         pauseBothTimers();
     }
 
     public void restart(View v){
+        restartGame();
+    }
+
+    public void restartGame(){
+        textView_gamePaused_top.setVisibility(View.INVISIBLE);
+        textView_gamePaused_bottom.setVisibility(View.INVISIBLE);
         button_top.setBackground(getDrawable(R.drawable.button_main_inactive));
         button_bottom.setBackground(getDrawable(R.drawable.button_main_inactive));
         button_top.setClickable(true);
@@ -255,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+        restartGame();
         soundID = spool.load(this, sounds[sharedPrefs.getInt("sound_id", 0)], 1);
         super.onResume();
     }
@@ -262,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         pauseBothTimers();
+        moveTaskToBack(true);
         super.onBackPressed();
     }
 
@@ -271,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
         // otherwise the timers will still run off and make sounds at the end
         super.onTrimMemory(level);
         if (level == TRIM_MEMORY_UI_HIDDEN) {
+            moveTaskToBack(true);
             pauseBothTimers();
         }
     }
@@ -279,12 +327,12 @@ public class MainActivity extends AppCompatActivity {
         try {
             timer_top.pause();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         try {
             timer_bottom.pause();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         state = 0;
     }

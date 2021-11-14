@@ -25,6 +25,7 @@ public class DialogSelectClicksound extends AppCompatDialogFragment{
     private DialogListener listener;
 
     private int current_sound_id;
+    private MediaPlayer mp;
 
     public DialogSelectClicksound(int current_sound_id){
         this.current_sound_id = current_sound_id;
@@ -33,7 +34,7 @@ public class DialogSelectClicksound extends AppCompatDialogFragment{
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_select_clicksound, null);
@@ -71,7 +72,12 @@ public class DialogSelectClicksound extends AppCompatDialogFragment{
     }
 
     public void playSound(int id){
-        MediaPlayer mp = MediaPlayer.create(getContext(), id);
+        try {
+            mp.release(); // -> needed to free resources of old sound
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        mp = MediaPlayer.create(getContext(), id);
         mp.start();
     }
 
