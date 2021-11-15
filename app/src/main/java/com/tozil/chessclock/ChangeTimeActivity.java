@@ -53,10 +53,10 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
 
         times[0] = generateTimeArray(sharedPrefs.getLong("timer_top_milliSeconds", 0));
         times[1] = generateTimeArray(sharedPrefs.getLong("timer_top_milliSecondsDelay", 0));
-        times[2] = generateTimeArray(sharedPrefs.getLong("timer_top_milliSecondsIncrease", 0));
+        times[2] = generateTimeArray(sharedPrefs.getLong("timer_top_milliSecondsIncrement", 0));
         times[3] = generateTimeArray(sharedPrefs.getLong("timer_bottom_milliSeconds", 0));
         times[4] = generateTimeArray(sharedPrefs.getLong("timer_bottom_milliSecondsDelay", 0));
-        times[5] = generateTimeArray(sharedPrefs.getLong("timer_bottom_milliSecondsIncrease", 0));
+        times[5] = generateTimeArray(sharedPrefs.getLong("timer_bottom_milliSecondsIncrement", 0));
 
         Button button = findViewById(R.id.button_timer1_total);
         changeButtonText(button, null, times[0][0], times[0][1], times[0][2]);
@@ -122,10 +122,10 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
 
         sharedPrefs.edit().putLong("timer_top_milliSeconds", timer_1_time).apply();
         sharedPrefs.edit().putLong("timer_top_milliSecondsDelay", timer_1_delay).apply();
-        sharedPrefs.edit().putLong("timer_top_milliSecondsIncrease", timer_1_increment).apply();
+        sharedPrefs.edit().putLong("timer_top_milliSecondsIncrement", timer_1_increment).apply();
         sharedPrefs.edit().putLong("timer_bottom_milliSeconds", timer_2_time).apply();
         sharedPrefs.edit().putLong("timer_bottom_milliSecondsDelay", timer_2_delay).apply();
-        sharedPrefs.edit().putLong("timer_bottom_milliSecondsIncrease", timer_2_increment).apply();
+        sharedPrefs.edit().putLong("timer_bottom_milliSecondsIncrement", timer_2_increment).apply();
 
         Toast.makeText(this, "New time set", Toast.LENGTH_SHORT).show();
 
@@ -137,6 +137,7 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
 //        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
 
         finish();
+        overridePendingTransition(R.anim.fadein2, R.anim.fadeout2);
     }
 
 
@@ -203,6 +204,11 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        overridePendingTransition(R.anim.fadein2, R.anim.fadeout2);
+    }
+
+    public void back(View v){
+        finish();
         overridePendingTransition(R.anim.fadein2, R.anim.fadeout2);
     }
 }

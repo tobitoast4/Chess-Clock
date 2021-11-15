@@ -5,14 +5,14 @@
             <item android:bottom="2dp" android:left="2dp">
                 <shape>
                     <gradient android:angle="270"
-                        android:endColor="@color/background"
-                        android:startColor="@color/background" />
-                    <corners android:radius="0dp" />
+                        android:endColor="@color/toolbar_color"
+                        android:startColor="@color/toolbar_color" />
+                    <stroke android:width="4dp" android:color="@color/toolbar_color" />
+                    <corners android:radius="200dp" />
                     <padding android:bottom="10dp" android:left="10dp"
                         android:right="10dp" android:top="10dp" />
                 </shape>
             </item>
         </layer-list>
     </item>
-
 </ripple>

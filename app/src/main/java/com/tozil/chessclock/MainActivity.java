@@ -96,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             sharedPrefs.edit().putLong("timer_top_milliSeconds", 300000).apply();
             sharedPrefs.edit().putLong("timer_bottom_milliSeconds", 300000).apply();
-            sharedPrefs.edit().putLong("timer_top_milliSecondsIncrease", 0).apply();
-            sharedPrefs.edit().putLong("timer_bottom_milliSecondsIncrease", 0).apply();
+            sharedPrefs.edit().putLong("timer_top_milliSecondsIncrement", 0).apply();
+            sharedPrefs.edit().putLong("timer_bottom_milliSecondsIncrement", 0).apply();
             sharedPrefs.edit().putLong("timer_top_milliSecondsDelay", 0).apply();
             sharedPrefs.edit().putLong("timer_bottom_milliSecondsDelay", 0).apply();
 
@@ -202,9 +202,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void toggleTimerTop(View v) { // pauses timer on top, resumes timer on bottom
         if(state != 0){
-            timer_top.addTime(sharedPrefs.getLong("timer_top_milliSecondsDelay", 0));
+            timer_top.addTime(sharedPrefs.getLong("timer_top_milliSecondsIncrement", 0));
+            textView_top.setText(getTime(timer_top.millisRemaining));
         }
-        textView_top.setText(getTime(timer_top.millisRemaining));
         toggleTimer(button_top, button_bottom);
         handler_top.postDelayed(new Runnable() {
             public void run() {
@@ -220,9 +220,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void toggleTimerBottom(View v) { // pauses timer on bottom, resumes timer on top
         if(state != 0){
-            timer_bottom.addTime(sharedPrefs.getLong("timer_bottom_milliSecondsDelay", 0));
+            timer_bottom.addTime(sharedPrefs.getLong("timer_bottom_milliSecondsIncrement", 0));
+            textView_bottom.setText(getTime(timer_bottom.millisRemaining));
         }
-        textView_bottom.setText(getTime(timer_bottom.millisRemaining));
         toggleTimer(button_bottom, button_top);
         handler_bottom.postDelayed(new Runnable() {
             public void run() {

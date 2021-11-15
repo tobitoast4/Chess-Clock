@@ -10,5 +10,5 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="background">#1D1D1D</color>
-    <color name="toolbar_color">@color/grey</color>
+    <color name="toolbar_color">@color/black</color>
 </resources>

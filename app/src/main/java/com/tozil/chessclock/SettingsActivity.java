@@ -35,7 +35,11 @@ public class SettingsActivity extends AppCompatActivity implements DialogSelectC
         switch_darkmode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                switchDarkmode();
+                if(AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_NO){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
             }
         });
     }
@@ -58,20 +62,21 @@ public class SettingsActivity extends AppCompatActivity implements DialogSelectC
 
 
     public void changeDarkmode(View v){
-        switchDarkmode();
-    }
-
-    public void switchDarkmode(){
-        if(AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_NO){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        if(switch_darkmode.isChecked()){
+            switch_darkmode.setChecked(false);
         } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            switch_darkmode.setChecked(true);
         }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        overridePendingTransition(R.anim.fadein2, R.anim.fadeout2);
+    }
+
+    public void back(View v){
+        finish();
         overridePendingTransition(R.anim.fadein2, R.anim.fadeout2);
     }
 }
