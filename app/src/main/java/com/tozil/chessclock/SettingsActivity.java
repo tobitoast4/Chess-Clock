@@ -43,6 +43,7 @@ public class SettingsActivity extends AppCompatActivity implements DialogSelectC
     public void changeTime(View v){
         Intent intent = new Intent(getApplicationContext(), ChangeTimeActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.fadein1, R.anim.fadeout1);
     }
 
     public void changeSound(View v){
@@ -66,5 +67,11 @@ public class SettingsActivity extends AppCompatActivity implements DialogSelectC
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.fadein2, R.anim.fadeout2);
     }
 }

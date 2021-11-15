@@ -34,28 +34,49 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2">
 
         <RadioButton
-            android:id="@+id/radioButton1"
+            android:id="@+id/radioButton0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Blob"
             android:textColor="@color/white" />
 
         <RadioButton
+            android:id="@+id/radioButton1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Closing box click"
+            android:textColor="@color/white" />
+
+        <RadioButton
             android:id="@+id/radioButton2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Metronom"
+            android:text="Handgun click"
             android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/radioButton3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Normal clack"
+            android:text="Metronom click"
             android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/radioButton4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Normal clack"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/radioButton5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Snear drum"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/radioButton6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tongue clack"

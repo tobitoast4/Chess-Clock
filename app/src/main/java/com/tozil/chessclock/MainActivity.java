@@ -33,11 +33,9 @@ public class MainActivity extends AppCompatActivity {
     Handler handler_top;
     Handler handler_bottom;
 
-    private int state = 0; // indicated the state of the game
+    private int state = 0; // indicates the state of the game
                            // 0: game hasnt started
-                           // 1: timer on top is running, timer on bottom is paused
-                           // 2: timer on bottom is running, timer on bottom is paused
-                           // 3: game is over, one timer is expired
+                           // 1: game started
 
     SoundPool spool;
     int soundID;
@@ -165,11 +163,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void initializeAudio(){
         // loads all audios
-        sounds = new int[4];
+        sounds = new int[7];
         sounds[0] = R.raw.blob;
-        sounds[1] = R.raw.metronom_click;
-        sounds[2] = R.raw.normal_clack;
-        sounds[3] = R.raw.tongue_clack;
+        sounds[1] = R.raw.closing_box_click;
+        sounds[2] = R.raw.handgun_click;
+        sounds[3] = R.raw.metronom_click;
+        sounds[4] = R.raw.normal_clack;
+        sounds[5] = R.raw.snear_drum_click;
+        sounds[6] = R.raw.tongue_clack;
 
         // loads the onClick sound
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -200,7 +201,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void toggleTimerTop(View v) { // pauses timer on top, resumes timer on bottom
-        timer_top.addTime(sharedPrefs.getLong("timer_top_milliSecondsDelay", 0));
+        if(state != 0){
+            timer_top.addTime(sharedPrefs.getLong("timer_top_milliSecondsDelay", 0));
+        }
         textView_top.setText(getTime(timer_top.millisRemaining));
         toggleTimer(button_top, button_bottom);
         handler_top.postDelayed(new Runnable() {
@@ -216,7 +219,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toggleTimerBottom(View v) { // pauses timer on bottom, resumes timer on top
-        timer_bottom.addTime(sharedPrefs.getLong("timer_bottom_milliSecondsDelay", 0));
+        if(state != 0){
+            timer_bottom.addTime(sharedPrefs.getLong("timer_bottom_milliSecondsDelay", 0));
+        }
         textView_bottom.setText(getTime(timer_bottom.millisRemaining));
         toggleTimer(button_bottom, button_top);
         handler_bottom.postDelayed(new Runnable() {
@@ -254,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
         pauseBothTimers();
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.fadein1, R.anim.fadeout1);
     }
 
     public void pauseGame(View v){
@@ -328,6 +334,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pauseBothTimers(){
+        //stopping running handlers
+        handler_top.removeCallbacksAndMessages(null);
+        handler_bottom.removeCallbacksAndMessages(null);
         try {
             timer_top.pause();
         } catch (Exception e) {

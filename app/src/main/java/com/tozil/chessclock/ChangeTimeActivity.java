@@ -199,4 +199,10 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
             button2.setText(new_time);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.fadein2, R.anim.fadeout2);
+    }
 }
