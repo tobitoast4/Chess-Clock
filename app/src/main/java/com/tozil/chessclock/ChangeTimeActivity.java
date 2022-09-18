@@ -2,20 +2,30 @@ package com.tozil.chessclock;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ChangeTimeActivity extends AppCompatActivity implements DialogTimePicker.DialogListener {
 
+    private RecyclerView recyclerView;
+    private TimerListAdapter adapter;
 
     private SharedPreferences sharedPrefs;
     private int[][] times;
@@ -46,6 +56,38 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
         darkmode = (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
 
         initializeTimes();
+
+        ArrayList<TimerItem> timers = new ArrayList<>();
+        timers.add(new TimerItem("Timer 1", 300000, 300000, 0, 0, 0, 0));
+        timers.add(new TimerItem("Timer 2", 300000, 300000, 5000, 5000, 0, 0));
+        timers.add(new TimerItem("Timer 3", 600000, 600000, 0, 0, 0, 0));
+        timers.add(new TimerItem("Timer 4", 1000, 2000, 3000,
+                4000, 5000, 6000));
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        adapter = new TimerListAdapter(timers);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new TimerListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Toast.makeText(ChangeTimeActivity.this, "" +position, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+//                DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+//                QuestionItem itemToDelete = mQuestionList.get(position);
+//                databaseHandler.deleteTask(itemToDelete.getId());
+                timers.remove(position);
+                adapter.notifyItemRemoved(position);
+
+            }
+        });
+
     }
 
     public void initializeTimes(){
@@ -210,5 +252,33 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
     public void back(View v){
         finish();
         overridePendingTransition(R.anim.fadein2, R.anim.fadeout2);
+    }
+
+    public void add(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter a name for the timer");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String m_Text = input.getText().toString();
+                Toast.makeText(ChangeTimeActivity.this, m_Text, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }

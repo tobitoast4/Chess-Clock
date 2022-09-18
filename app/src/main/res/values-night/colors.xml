@@ -11,4 +11,7 @@
 
     <color name="background">#1D1D1D</color>
     <color name="toolbar_color">@color/black</color>
+
+    <color name="recycler_view_item_bg">#151515</color>
+    <color name="recycler_view_item_stroke">#888888</color>
 </resources>
