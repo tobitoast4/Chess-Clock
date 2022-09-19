@@ -27,6 +27,8 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
     private RecyclerView recyclerView;
     private TimerListAdapter adapter;
 
+    ArrayList<TimerItem> timers;
+
     private SharedPreferences sharedPrefs;
     private int[][] times;
 
@@ -57,12 +59,8 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
 
         initializeTimes();
 
-        ArrayList<TimerItem> timers = new ArrayList<>();
-        timers.add(new TimerItem("Timer 1", 300000, 300000, 0, 0, 0, 0));
-        timers.add(new TimerItem("Timer 2", 300000, 300000, 5000, 5000, 0, 0));
-        timers.add(new TimerItem("Timer 3", 600000, 600000, 0, 0, 0, 0));
-        timers.add(new TimerItem("Timer 4", 1000, 2000, 3000,
-                4000, 5000, 6000));
+        DatabaseHandler dbh = new DatabaseHandler(getApplicationContext());
+        timers = dbh.getAllTimers();
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -74,14 +72,34 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
         adapter.setOnItemClickListener(new TimerListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Toast.makeText(ChangeTimeActivity.this, "" +position, Toast.LENGTH_SHORT).show();
+                TimerItem timer = timers.get(position);
+                long timer_top_ms_total = timer.getTimerTopMilliSeconds();
+                long timer_top_ms_delay = timer.getTimerTopMilliSecondsDelay();
+                long timer_top_ms_increment = timer.getTimerTopMilliSecondsIncrement();
+                long timer_bottom_ms_total = timer.getTimerBottomMilliSeconds();
+                long timer_bottom_ms_delay = timer.getTimerBottomMilliSecondsDelay();
+                long timer_bottom_ms_increment = timer.getTimerBottomMilliSecondsIncrement();
+
+                int[] timearray;
+                timearray = generateTimeArray(timer_top_ms_total);
+                applyTime(timearray[0], timearray[1], timearray[2], 0);
+                timearray = generateTimeArray(timer_top_ms_delay);
+                applyTime(timearray[0], timearray[1], timearray[2], 1);
+                timearray = generateTimeArray(timer_top_ms_increment);
+                applyTime(timearray[0], timearray[1], timearray[2], 2);
+                timearray = generateTimeArray(timer_bottom_ms_total);
+                applyTime(timearray[0], timearray[1], timearray[2], 3);
+                timearray = generateTimeArray(timer_bottom_ms_delay);
+                applyTime(timearray[0], timearray[1], timearray[2], 4);
+                timearray = generateTimeArray(timer_bottom_ms_increment);
+                applyTime(timearray[0], timearray[1], timearray[2], 5);
             }
 
             @Override
             public void onDeleteClick(int position) {
-//                DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
-//                QuestionItem itemToDelete = mQuestionList.get(position);
-//                databaseHandler.deleteTask(itemToDelete.getId());
+                DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+                TimerItem timerItem = timers.get(position);
+                databaseHandler.deleteTimer(timerItem.getTimerName());
                 timers.remove(position);
                 adapter.notifyItemRemoved(position);
 
@@ -170,13 +188,6 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
         sharedPrefs.edit().putLong("timer_bottom_milliSecondsIncrement", timer_2_increment).apply();
 
         Toast.makeText(this, "New time set", Toast.LENGTH_SHORT).show();
-
-//
-//        String s = "";
-//        for (int i = 0; i<6; i++){
-//            s = s + Arrays.toString(times[i]);
-//        }
-//        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
 
         finish();
         overridePendingTransition(R.anim.fadein2, R.anim.fadeout2);
@@ -268,8 +279,25 @@ public class ChangeTimeActivity extends AppCompatActivity implements DialogTimeP
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String m_Text = input.getText().toString();
-                Toast.makeText(ChangeTimeActivity.this, m_Text, Toast.LENGTH_SHORT).show();
+                String timer_name = input.getText().toString();
+                TimerItem timerItem = new TimerItem(
+                        timer_name,
+                        times[0][0] * 3600000L + times[0][1] * 60000L + times[0][2] * 1000L,
+                        times[1][0] * 3600000L + times[1][1] * 60000L + times[1][2] * 1000L,
+                        times[2][0] * 3600000L + times[2][1] * 60000L + times[2][2] * 1000L,
+                        times[3][0] * 3600000L + times[3][1] * 60000L + times[3][2] * 1000L,
+                        times[4][0] * 3600000L + times[4][1] * 60000L + times[4][2] * 1000L,
+                        times[5][0] * 3600000L + times[5][1] * 60000L + times[5][2] * 1000L
+                );
+                DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+                if(databaseHandler.timerAlreadyExists(timer_name)){
+                    Toast.makeText(ChangeTimeActivity.this, "Timer name already in use", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Timer added", Toast.LENGTH_SHORT).show();
+                    databaseHandler.insertNewTimer(timerItem);
+                    timers.add(0, timerItem);
+                    adapter.notifyItemChanged(0);
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

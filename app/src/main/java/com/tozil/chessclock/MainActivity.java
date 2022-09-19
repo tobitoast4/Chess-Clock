@@ -71,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPrefs = this.getSharedPreferences("settings", Context.MODE_PRIVATE);
 
+        String first_start_key = "first_start";
+        if (sharedPrefs.getBoolean(first_start_key, true)) { // only executed at first app start
+            sharedPrefs.edit().putBoolean(first_start_key, false).apply();
+            DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+            databaseHandler.createTables();
+            databaseHandler.insertBasicTimers();
+        }
+
         onFirstStart();
 
         startGame();
